@@ -12,9 +12,15 @@ function App() {
   }, [])
   return (
     <div>
-      
+      {backendData.message ? (
+        backendData.message.map((msg, index) => (
+          <h1 key={index}>{msg}</h1>
+        ))
+      ) : (
+        <h1>Loading...</h1>
+      )}
     </div>
-  )
+  );
 }
 
 export default App
