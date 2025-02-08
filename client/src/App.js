@@ -108,11 +108,13 @@ function ImageUploader() {
       const result = await response.json();
 
       if (result.clothingItems) {
-        setClothingItems(result.clothingItems);
+        // setClothingItems(result.clothingItems);
+        setClothingItems(prevItems => [...prevItems, ...result.clothingItems]);
         // setLastClothingItem(result.clothingItems[result.clothingItems.length - 1] || "No item detected.");
       } else {
-        setClothingItems(["No clothing description available."]);
+        // setClothingItems(["No clothing description available."]);
         // setLastClothingItem(null);
+        alert("No clothing description available.");
       }
 
       setNewImageSelected(false);
