@@ -2,17 +2,17 @@ import React, { useState, useEffect } from "react";
 
 
 
-function GetLocation () {
-    const [location, setLocation] = useState(null);
+function GetLocation (setCity, setTemperature, setWeather) {
+    // const [location, setLocation] = useState(null);
     const [error, setError] = useState(null);
-    const [weather, setWeather] = useState(null);
+    // const [weather, setWeather] = useState(null);
   
     useEffect(() => {
         if ("geolocation" in navigator) {
           navigator.geolocation.getCurrentPosition(
             async (position) => {
               const { latitude, longitude } = position.coords;
-              setLocation({ latitude, longitude });
+              // setLocation({ latitude, longitude });
     
               // Call an async function to fetch weather data
               fetchWeather(latitude, longitude);
@@ -43,8 +43,11 @@ function GetLocation () {
         console.log("Tempreture data:", result.temperature);
         console.log("Humidity data:", result.humidity);
         console.log("Weather data:", result.weather);
-      } else {
-        setWeather("No weather information available.");
+        setCity(result.city);
+        setTemperature(result.temperature);
+        setWeather(result.weather);
+        // return {'city': result.city, 'temperature': result.temperature, 'weather': result.weather};
+        
       }
     } catch (error) {
       console.error("Weather fetch failed:", error);
@@ -61,6 +64,7 @@ function GetLocation () {
     //     {weather && <p>{weather}</p>}
     //   </div>
     // );
+    // return json object
   }
   
 export { GetLocation };

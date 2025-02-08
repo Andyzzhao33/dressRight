@@ -16,6 +16,10 @@ function ImageUploader() {
   const [countdown, setCountdown] = useState(0);
   const fileInputRef = useRef(null);
   const webcamRef = useRef(null);
+  const [city, setCity] = useState("");
+  const [temperature, setTemperature] = useState("");
+  const [weather, setWeather] = useState("");
+
 
   // Handles file selection
   const handleImageChange = (event) => {
@@ -29,6 +33,11 @@ function ImageUploader() {
     }
   };
 
+  // useEffect(() => {
+  //   GetLocation(setCity);
+  // }, []); // Runs only once at startup
+  GetLocation(setCity, setTemperature, setWeather);
+  
   // Countdown Timer for Webcam Capture
   useEffect(() => {
     if (countdown > 0) {
@@ -115,7 +124,7 @@ function ImageUploader() {
         {/* Left Column - Location & Image Upload */}
         <div style={{ flex: 3, textAlign: "center", paddingRight: "20px" }}>
           {/* Display Location Component */}
-          <GetLocation />
+          {/* <GetLocation /> */}
   
           <h2>Choose an Option</h2>
   
@@ -197,8 +206,15 @@ function ImageUploader() {
   
           {/* Last Extracted Clothing Item Section */}
           {lastClothingItem && (
+            <div style={cityStyle}>
+              <p style={{ marginTop: "0.01em"}}>🏠City: {city}</p>
+              <p style={{ marginTop: "0.01em"}}>🌡Temperature: {temperature}°C</p>
+              <p style={{ marginTop: "0.01em"}}>🌦Weather: {weather}</p>
+            </div>
+          )}
+          {lastClothingItem && (
             <div style={lastItemContainerStyle}>
-              <h4 style={{ marginTop: "0.3em" }}>🌴Suggestions🌴</h4>
+              <h4 style={{ marginTop: "0.01em" }}>🌴Suggestions</h4>
               <p style={lastItemStyle}>{lastClothingItem}</p>
             </div>
           )}
@@ -297,7 +313,17 @@ const countdownStyle = {
 };
 
 const lastItemContainerStyle = {
-  marginTop: "auto", // Pushes it to the bottom
+  marginTop: "1em", // Pushes it to the bottom
+  padding: "10px",
+  background: "#e3f2fd",
+  borderRadius: "5px",
+  textAlign: "center",
+  background: "#fff",
+  boxShadow: "1px 1px 5px rgba(0, 0, 0, 0.1)",
+};
+
+const cityStyle = {
+  marginTop: "auto", 
   padding: "10px",
   background: "#e3f2fd",
   borderRadius: "5px",
