@@ -4,7 +4,7 @@ import dotenv from "dotenv";
 
 dotenv.config(); // Load environment variables
 
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY }); // Secure API key
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 // Function to encode an image as a Base64 string
 const encodeImage = (imagePath) => {
@@ -12,7 +12,7 @@ const encodeImage = (imagePath) => {
   return imageBuffer.toString("base64");
 };
 
-// Function to send an image to OpenAI and get clothing description
+// Function to process image with OpenAI and extract clothing items
 export const describeClothing = async (imagePath) => {
   try {
     const base64Image = encodeImage(imagePath);
@@ -25,7 +25,7 @@ export const describeClothing = async (imagePath) => {
           content: [
             {
               type: "text",
-              text: "Describe the clothing the person in this image is wearing, including type, color, and coverage.",
+              text: "Describe the clothing the person in this image is wearing in a simple comma-separated list, e.g., 'red sweater, blue jeans, white sneakers'.",
             },
             {
               type: "image_url",
@@ -37,9 +37,17 @@ export const describeClothing = async (imagePath) => {
       store: true,
     });
 
-    return response.choices[0].message.content;
+    const description = response.choices[0].message.content;
+
+    // Parse the description into a list
+    const clothingItems = description
+      .split(/,|\band\b|\n/) // Split by commas, "and", or new lines
+      .map(item => item.trim()) // Trim spaces
+      .filter(item => item.length > 0); // Remove empty items
+
+    return clothingItems;
   } catch (error) {
     console.error("Error in OpenAI request:", error);
-    return "Failed to analyze image.";
+    return ["Error processing image"];
   }
 };

@@ -2,12 +2,12 @@ import express from "express";
 import multer from "multer";
 import cors from "cors";
 import path from "path";
-import { describeClothing } from "./openaiService.js"; // Import OpenAI function
+import { describeClothing } from "./openaiService.js";
 
 const app = express();
 const PORT = 8000;
 
-app.use(cors()); // Allow frontend to call backend
+app.use(cors()); // Allow frontend requests
 
 // Storage setup for multer
 const storage = multer.diskStorage({
@@ -25,17 +25,16 @@ app.post("/upload", upload.single("image"), async (req, res) => {
     return res.status(400).json({ message: "No file uploaded!" });
   }
 
-  // Get the uploaded image path
   const imagePath = `uploads/${req.file.filename}`;
 
   try {
-    // Send image to OpenAI for clothing description
-    const clothingDescription = await describeClothing(imagePath);
+    // Get parsed clothing items list
+    const clothingItems = await describeClothing(imagePath);
 
     res.json({
       message: "File uploaded successfully!",
       filename: req.file.filename,
-      description: clothingDescription, // Add AI-generated description to response
+      clothingItems: clothingItems, // Send parsed list instead of raw response
     });
   } catch (error) {
     console.error("Error processing image:", error);
