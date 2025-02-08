@@ -74,6 +74,9 @@ app.post("/location", async (req, res) => {
         location: `Lat: ${latitude}, Lon: ${longitude}`,
         ...weatherData, // Spread weather data into the response
       });
+
+    console.log("Weather condition:", weather_condition);
+
     } catch (error) {
       console.error("API Error:", error);
       res.status(500).json({ error: "Failed to fetch location and weather data." });
