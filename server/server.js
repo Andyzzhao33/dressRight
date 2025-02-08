@@ -3,7 +3,7 @@ import multer from "multer";
 import cors from "cors";
 import path from "path";
 import axios from "axios";
-import { describeClothing } from "./openaiService.js";
+import { describeClothing, getSuggestions } from "./openaiService.js";
 import { getCityName, getWeather } from "./weather.js"; // Import weather functions
 
 const app = express();
@@ -33,7 +33,7 @@ app.post("/upload", upload.single("image"), async (req, res) => {
 
   try {
     // Get parsed clothing items list
-    const clothingItems = await describeClothing(imagePath, weather_condition);
+    const clothingItems = await describeClothing(imagePath);
 
     res.json({
       message: "File uploaded successfully!",
@@ -45,6 +45,29 @@ app.post("/upload", upload.single("image"), async (req, res) => {
     res.status(500).json({ message: "Image processing failed." });
   }
 });
+
+app.post("/suggestions", async (req, res) => {
+    console.log("Received request body:", req.body); // Debugging log
+  
+    const { dressItems } = req.body;
+  
+    if (!dressItems || !Array.isArray(dressItems)) {
+      return res.status(400).json({ message: "Invalid or missing dressItems." });
+    }
+  
+    try {
+      // Simulate getting suggestions
+      console.log("WEATHER condition:", weather_condition);
+      const suggestions = await getSuggestions(dressItems, weather_condition);
+  
+      res.json({
+        suggestions: suggestions,
+      });
+    } catch (error) {
+      console.error("Error processing suggestions:", error);
+      res.status(500).json({ message: "Suggestions processing failed." });
+    }
+  });
 
 // Location Route - Fetch City Name and Weather
 app.post("/location", async (req, res) => {

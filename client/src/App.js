@@ -7,7 +7,7 @@ function ImageUploader() {
   const [previewUrl, setPreviewUrl] = useState(null);
   const [webcamUrl, setWebcamUrl] = useState(null);
   const [clothingItems, setClothingItems] = useState([]); // Store parsed clothing list
-  const [lastClothingItem, setLastClothingItem] = useState(null); // Last extracted clothing item
+  // const [lastClothingItem, setLastClothingItem] = useState(null); // Last extracted clothing item
   const [newImageSelected, setNewImageSelected] = useState(false);
   const [useWebcam, setUseWebcam] = useState(false);
   const [capturedImage, setCapturedImage] = useState(null);
@@ -19,7 +19,16 @@ function ImageUploader() {
   const [city, setCity] = useState("");
   const [temperature, setTemperature] = useState("");
   const [weather, setWeather] = useState("");
+  const [suggestions, setSuggestions] = useState(false);
+  const [suggestActive, setSuggestActive] = useState(false);
+  const [dressInput, setDressInput] = useState("");
 
+
+  const handleAddItem = () => {
+    if (dressInput.trim() === "") return; // Ignore empty inputs
+    setClothingItems([...clothingItems, dressInput.trim()]); // Add to list
+    setDressInput(""); // Clear input field
+  };
 
   // Handles file selection
   const handleImageChange = (event) => {
@@ -32,10 +41,7 @@ function ImageUploader() {
       setNewImageSelected(true);
     }
   };
-
-  // useEffect(() => {
-  //   GetLocation(setCity);
-  // }, []); // Runs only once at startup
+  // call the GetLocation function
   GetLocation(setCity, setTemperature, setWeather);
   
   // Countdown Timer for Webcam Capture
@@ -47,6 +53,11 @@ function ImageUploader() {
       captureImage();
     }
   }, [countdown, isCapturing]);
+
+  useEffect(() => {
+    // Enable button when clothingItems changes and is not empty
+    setSuggestActive(clothingItems.length > 0);
+  }, [clothingItems]);
 
   // Start Countdown and Capture Image
   const handleCapture = () => {
@@ -98,10 +109,10 @@ function ImageUploader() {
 
       if (result.clothingItems) {
         setClothingItems(result.clothingItems);
-        setLastClothingItem(result.clothingItems[result.clothingItems.length - 1] || "No item detected.");
+        // setLastClothingItem(result.clothingItems[result.clothingItems.length - 1] || "No item detected.");
       } else {
         setClothingItems(["No clothing description available."]);
-        setLastClothingItem(null);
+        // setLastClothingItem(null);
       }
 
       setNewImageSelected(false);
@@ -112,12 +123,42 @@ function ImageUploader() {
     }
   };
 
+  const handleSuggestions = async () => {
+    if (!clothingItems || clothingItems.length === 0) return;
+  
+    console.log("Sending clothingItems:", clothingItems);
+  
+    try {
+      const response = await fetch("http://localhost:8000/suggestions", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json", // Set JSON content type
+        },
+        body: JSON.stringify({ dressItems: clothingItems }), // Send as JSON
+      });
+  
+      const result = await response.json();
+  
+      if (result.suggestions) {
+        setSuggestions(result.suggestions);
+        setSuggestActive(false);
+      } else {
+        setSuggestions("No suggestions available.");
+      }
+    } catch (error) {
+      console.error("Suggestions failed:", error);
+      alert("Suggestions failed!");
+    }
+  };
+  
+
   return (
     <div>
       {/* Header */}
-      <header style={headerStyle}>
-        <h1>DressRight</h1>
+      <header style={{ display: "flex", justifyContent: "center", alignItems: "center", padding: "15px" }}>
+        <img src="/header.png" alt="Website Header" style={{ width: "30%", height: "auto" }} />
       </header>
+
   
       {/* Main Content */}
       <div style={{ display: "flex", height: "100vh", padding: "20px" }}>
@@ -197,25 +238,37 @@ function ImageUploader() {
   
         {/* Right Column - Clothing List */}
         <div style={clothingListContainerStyle}>
+          <div style={cityStyle}>
+            <h3 style={{ marginBottom: "10px", textAlign: "center" }}>🌍 Your Location:</h3>
+              {city && (<p style={{ marginTop: "0.01em"}}>🏠City: {city}</p>)}
+              {temperature && (<p style={{ marginTop: "0.01em"}}>🌡Temperature: {temperature}°C</p>)}
+              {weather && (<p style={{ marginTop: "0.01em"}}>🌦Weather: {weather}</p>)}
+          </div>
           <h3 style={{ marginBottom: "10px", textAlign: "center" }}>👕 What You're Wearing:</h3>
           <ul style={{ listStyleType: "none", padding: 0 }}>
-            {clothingItems.slice(0, -1).map((item, index) => (
+            {clothingItems.map((item, index) => (
               <li key={index} style={clothingItemStyle}>{item}</li>
             ))}
           </ul>
+          {/* Input box for manually entering clothing items */}
+          <input
+            type="text"
+            value={dressInput}
+            onChange={(e) => setDressInput(e.target.value)}
+            placeholder="Enter clothing item..."
+          />
+          <button onClick={handleAddItem}>Add Item</button>
+
+          {/* Suggestions Button */}
+          <button onClick={handleSuggestions} style={buttonStyle(suggestActive)} disabled={!suggestActive}> 
+            Get Suggestions
+          </button>
   
           {/* Last Extracted Clothing Item Section */}
-          {lastClothingItem && (
-            <div style={cityStyle}>
-              <p style={{ marginTop: "0.01em"}}>🏠City: {city}</p>
-              <p style={{ marginTop: "0.01em"}}>🌡Temperature: {temperature}°C</p>
-              <p style={{ marginTop: "0.01em"}}>🌦Weather: {weather}</p>
-            </div>
-          )}
-          {lastClothingItem && (
+          {suggestions && (
             <div style={lastItemContainerStyle}>
               <h4 style={{ marginTop: "0.01em" }}>🌴Suggestions</h4>
-              <p style={lastItemStyle}>{lastClothingItem}</p>
+              <p style={lastItemStyle}>{suggestions}</p>
             </div>
           )}
         </div>
@@ -226,13 +279,10 @@ function ImageUploader() {
 }
 
 /* Styled Components */
-const headerStyle = {
-  color: "black",
-  textAlign: "center",
-  padding: "15px",
-  fontSize: "24px",
-  fontWeight: "bold",
-};
+// const headerStyle = {
+//   textAlign: "center",
+//   padding: "15px",
+// };
 
 const buttonStyle = (isActive) => ({
   margin: "5px",
@@ -323,7 +373,7 @@ const lastItemContainerStyle = {
 };
 
 const cityStyle = {
-  marginTop: "auto", 
+  marginTop: "5px", 
   padding: "10px",
   background: "#e3f2fd",
   borderRadius: "5px",
