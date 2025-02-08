@@ -174,15 +174,23 @@ function ImageUploader() {
       {/* Main Content */}
       <div style={{ display: "flex", height: "100vh", padding: "20px" }}>
         {/* Left Column - Location & Image Upload */}
-        <div style={{ flex: 3, textAlign: "center", paddingRight: "20px" }}>
+        <div style={{ fontFamily: "Poppins, sans-serif", flex: 3, textAlign: "center", paddingRight: "20px" }}>
           {/* Display Location Component */}
           {/* <GetLocation /> */}
   
           <h2>Choose an Option</h2>
   
-          <div style={{ marginBottom: "10px" }}>
+          <div style={{ 
+            ...buttonContainerStyle, 
+            borderRadius: "25px", 
+            backgroundColor: "#fff", 
+            width: "300px",   // Set a shorter width (adjust as needed)
+            margin: "0 auto", // Center horizontally
+            display: "flex",  // Make sure to use flex to align the buttons side by side
+            justifyContent: "space-between", // To space the buttons evenly
+          }}>
             <button onClick={() => setUseWebcam(false)} style={buttonStyle(!useWebcam)}>
-              Upload Image
+              Image
             </button>
             <button onClick={() => setUseWebcam(true)} style={buttonStyle(useWebcam)}>
               Use Webcam
@@ -306,19 +314,27 @@ function ImageUploader() {
 }
 
 /* Styled Components */
-// const headerStyle = {
-//   textAlign: "center",
-//   padding: "15px",
-// };
+
+const buttonContainerStyle = {
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  gap: "10px", // Space between buttons
+  padding: "5px",
+  borderRadius: "25px", // Rounded corners for the container
+  backgroundColor: "#f0f0f0", // Light background for the container
+  border: "2px solid #ccc", // Light border around the container
+};
 
 const buttonStyle = (isActive) => ({
-  margin: "5px",
-  padding: "10px",
+  padding: "15px 30px", // Make the buttons bigger
   cursor: "pointer",
-  backgroundColor: isActive ? "#007bff" : "#cccccc",
+  backgroundColor: isActive ? "#202543" : "#cccccc", // Blue if active, grey if inactive
   color: "white",
   border: "none",
-  borderRadius: "5px",
+  borderRadius: "25px", // Rounded corners
+  transition: "background-color 0.3s ease", // Smooth transition for background color change
+  flex: 1, // This makes the buttons expand to fill the space evenly
 });
 
 const captureButtonStyle = (isCapturing) => ({
@@ -340,7 +356,7 @@ const uploadButtonStyle = (enabled) => ({
   backgroundColor: enabled ? "#4CAF50" : "#cccccc",
   color: "white",
   border: "none",
-  borderRadius: "5px",
+  borderRadius: "25px",
 });
 
 const webcamStyle = {
@@ -356,6 +372,20 @@ const imagePreviewStyle = {
   width: "300px",
 };
 
+// Location and Weather Styling
+const cityStyle = {
+  marginTop: "1px", 
+  padding: "10px",
+  background: "#e3f2fd",
+  borderRadius: "5px",
+  textAlign: "center",
+  fontFamily: "'Coming Soon', cursive", 
+  background: "#fff",
+  fontWeight: "bold",
+  boxShadow: "1px 1px 5px rgba(0, 0, 0, 0.1)",
+};
+
+// "What You're Wearing" Styling
 const clothingListContainerStyle = {
   flex: 1,
   display: "flex",
@@ -365,6 +395,7 @@ const clothingListContainerStyle = {
   overflowY: "auto",
   background: "#f9f9f9",
   position: "relative",
+  fontFamily: "Poppins, sans-serif",  // Poppins font for "What You're Wearing"
 };
 
 
@@ -391,16 +422,6 @@ const countdownStyle = {
 
 const lastItemContainerStyle = {
   marginTop: "1em", // Pushes it to the bottom
-  padding: "10px",
-  background: "#e3f2fd",
-  borderRadius: "5px",
-  textAlign: "center",
-  background: "#fff",
-  boxShadow: "1px 1px 5px rgba(0, 0, 0, 0.1)",
-};
-
-const cityStyle = {
-  marginTop: "5px", 
   padding: "10px",
   background: "#e3f2fd",
   borderRadius: "5px",

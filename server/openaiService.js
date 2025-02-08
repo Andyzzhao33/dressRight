@@ -26,8 +26,8 @@ export const describeClothing = async (imagePath) => {
           content: [
             {
               type: "text",
-              text: `Describe the person's clothing in the image as a simple semi-colon-separated list. Example:
-                “red sweater; blue jeans; white sneakers"`
+              text: `Describe the person's clothing in the image as a simple semi-colon-separated list. 
+                Example: “blue dress; yellow coat"`
                 // text: `Describe the person's clothing in the image as a simple semi-colon-separated list. End the list with a natural, human-like comment on whether the outfit is appropriate for current temperature at 30 degrees celcius considering warmth and comfort. Example:
                 // “red sweater; blue jeans; white sneakers; This outfit is a good fit—warm enough with the sweater and pants. However, adding a light jacket would provide extra comfort, especially if staying outside for an extended period."`
             
@@ -68,8 +68,7 @@ export const getSuggestions = async (dressItems, weather_condition) => {
           content: `The user is wearing: ${dressItems}.
                     The weather is: ${weather_condition.temperature}, humidity at ${weather_condition.humidity}, 
                     condition: ${weather_condition.weather}, min temperature ${weather_condition.min_temperature}, max temperature ${weather_condition.max_temperature}.
-          
-                    Comment on whether the outfit is appropriate for current temperature considering warmth and comfort. `,
+                    Comment on whether the outfit is appropriate for current temperature considering warmth and comfort in a good format, without markdown or special characters.` ,
         },
       ],
       store: true,
