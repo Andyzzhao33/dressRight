@@ -166,15 +166,33 @@ function ImageUploader() {
   return (
     <div>
       {/* Header */}
-      <header style={{ display: "flex", justifyContent: "center", alignItems: "center", padding: "15px" }}>
-        <img src="/header.png" alt="Website Header" style={{ width: "30%", height: "auto" }} />
+      <header style={{ display: "flex", justifyContent: "center", alignItems: "center", padding: "15px", width: "100%" }}>
+        <img src="/header.png" alt="Website Header" style={{ width: "30%", height: "auto", left: "50%" }} />
+        <div style={cityStyle}>
+          <div style={{ marginBottom: "50px" }} /> {/* Add some space between the header and location */}
+          <h3 style={{ marginBottom: "10px", textAlign: "center" }}>🌍 Your Location:</h3>
+          {(<p style={{ marginTop: "0.01em", lineHeight: "1.2" }}>🏠City: {city}</p>)}
+          {(<p style={{ marginTop: "0.01em", lineHeight: "1.2" }}>🌡Temperature: {temperature}°C / {(temperature * 1.8 + 32).toFixed(2)}°F</p>)}
+          {(<p style={{ marginTop: "0.01em", lineHeight: "1.2" }}>🌦Weather: {weather}</p>)}
+        </div>
       </header>
+
+      {/* <header style={{ display: "flex", justifyContent: "center", alignItems: "center", padding: "15px", width: "100%" }}>
+        <img src="/header.png" alt="Website Header" style={{ width: "30%", height: "auto", position: "absolute", left: "50%", transform: "translateX(-50%)" }} />
+        
+        <div style={{ position: "absolute", right: "15px", textAlign: "right" }}>
+          <h3 style={{ marginBottom: "10px" }}>🌍 Your Location:</h3>
+          {city && (<p style={{ marginTop: "0.01em" }}>🏠City: {city}</p>)}
+          {temperature && (<p style={{ marginTop: "0.01em" }}>🌡Temperature: {temperature}°C</p>)}
+          {weather && (<p style={{ marginTop: "0.01em" }}>🌦Weather: {weather}</p>)}
+        </div>
+      </header> */}
 
   
       {/* Main Content */}
       <div style={{ display: "flex", height: "100vh", padding: "20px" }}>
         {/* Left Column - Location & Image Upload */}
-        <div style={{ fontFamily: "Poppins, sans-serif", flex: 3, textAlign: "center", paddingRight: "20px" }}>
+        <div style={{ fontFamily: "'Ewert', cursive", flex: 3, textAlign: "center", paddingRight: "20px", fontSize: "20px", color: "#4b3621" }}>
           {/* Display Location Component */}
           {/* <GetLocation /> */}
   
@@ -237,13 +255,14 @@ function ImageUploader() {
               />
   
               {/* Custom Select Image Button */}
-              <button onClick={() => fileInputRef.current.click()} style={buttonStyle(true)}>
-                Select Image
-              </button>
-  
-              <button onClick={handleUpload} disabled={!newImageSelected} style={uploadButtonStyle(newImageSelected)}>
-                Upload
-              </button>
+              <div style={{ display: "flex", justifyContent: "center", gap: "20px" }}>
+                <button onClick={() => fileInputRef.current.click()} style={selectButtonStyle}>
+                  Select
+                </button>
+                <button onClick={handleUpload} disabled={!newImageSelected} style={uploadButtonStyle(newImageSelected)}>
+                  Upload
+                </button>
+              </div>
 
                {/* Show Preview Only if Webcam is NOT Enabled */}
                {previewUrl && !useWebcam && (
@@ -257,12 +276,6 @@ function ImageUploader() {
   
         {/* Right Column - Clothing List */}
         <div style={clothingListContainerStyle}>
-          <div style={cityStyle}>
-            <h3 style={{ marginBottom: "10px", textAlign: "center" }}>🌍 Your Location:</h3>
-              {city && (<p style={{ marginTop: "0.01em"}}>🏠City: {city}</p>)}
-              {temperature && (<p style={{ marginTop: "0.01em"}}>🌡Temperature: {temperature}°C</p>)}
-              {weather && (<p style={{ marginTop: "0.01em"}}>🌦Weather: {weather}</p>)}
-          </div>
           <h3 style={{ marginBottom: "10px", textAlign: "center" }}>👕 What You're Wearing:</h3>
           <ul style={{ listStyleType: "none", padding: 0 }}>
             {clothingItems.map((item, index) => (
@@ -275,26 +288,26 @@ function ImageUploader() {
             ))}
           </ul>
           {/* Input box for manually entering clothing items */}
-          <div style={{ display: "flex", alignItems: "center", gap: "10px", marginTop: "10px" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "10px", marginTop: "10px", color: "#4b3621"}}>
             <input
               type="text"
               value={dressInput}
               onChange={(e) => setDressInput(e.target.value)}
               placeholder="Enter clothing item..."
-              style={{ padding: "1em", width: "80%", borderRadius: "0.2em" }}
+              style={{ padding: "1em", borderRadius: "25px", border: "2px solid #ccc", width: "70%", color: "#4b3621" }}
             />
-            <button onClick={handleAddItem} style={{ padding: "0.7em", borderRadius: "0.2em"}}>
+            <button onClick={handleAddItem} style={{ padding: "0.7em", borderRadius: "15px"}}>
               ➕
             </button>
           </div>
           
           <div style={{ display: "flex", alignItems: "center", gap: "2%", marginTop: "3%" }}>
-            <button onClick={handleResetItems} style={{ padding: "3%", width: "40%", borderRadius: "0.2%", marginTop: "1.5%", cursor: (clothingItems && clothingItems.length !== 0)  ? "pointer" : "not-allowed", }} disabled = {!clothingItems || clothingItems.length === 0}>
+            <button onClick={handleResetItems} style={{ padding: "3%", width: "40%", borderRadius: "25px", borderColor: "#4b3621", marginTop: "1.5%", cursor: (clothingItems && clothingItems.length !== 0)  ? "pointer" : "not-allowed", }} disabled = {!clothingItems || clothingItems.length === 0}>
             Reset 🔄
             </button>
 
             {/* Suggestions Button */}
-            <button onClick={handleSuggestions} style={{ padding: "3%", width: "40%", borderRadius: "0.2%", marginTop: "1.5%", marginLeft: "3%", cursor: suggestActive ? "pointer" : "not-allowed",}} disabled={!suggestActive}> 
+            <button onClick={handleSuggestions} style={{ padding: "3%", width: "40%", borderRadius: "25px", borderColor: "#4b3621", marginTop: "1.5%", marginLeft: "3%", cursor: suggestActive ? "pointer" : "not-allowed"}} disabled={!suggestActive}> 
               Suggest
             </button>
           </div>
@@ -327,14 +340,16 @@ const buttonContainerStyle = {
 };
 
 const buttonStyle = (isActive) => ({
-  padding: "15px 30px", // Make the buttons bigger
+  padding: "10px 10px", // Make the buttons bigger
   cursor: "pointer",
-  backgroundColor: isActive ? "#202543" : "#cccccc", // Blue if active, grey if inactive
+  backgroundColor: isActive ? "#7f5112" : "#cccccc", // Blue if active, grey if inactive
   color: "white",
   border: "none",
   borderRadius: "25px", // Rounded corners
   transition: "background-color 0.3s ease", // Smooth transition for background color change
   flex: 1, // This makes the buttons expand to fill the space evenly
+  fontFamily: "'Flavors', cursive", // Ewert font for buttons
+  fontSize: "25px",
 });
 
 const captureButtonStyle = (isCapturing) => ({
@@ -342,21 +357,37 @@ const captureButtonStyle = (isCapturing) => ({
   padding: "10px",
   cursor: isCapturing ? "not-allowed" : "pointer",
   opacity: isCapturing ? "0.5" : "1",
-  backgroundColor: "#4CAF50",
+  backgroundColor: "#7f5112",
   color: "white",
   border: "none",
-  borderRadius: "5px",
+  borderRadius: "25px",
+  fontFamily: "'Flavors', cursive",
+  fontSize: "16px",
 });
+
+const selectButtonStyle = {
+  marginTop: "10px",
+  cursor: "pointer",
+  padding: "10px",
+  backgroundColor: "#7f5112",
+  color: "white",
+  border: "none",
+  borderRadius: "25px",
+  fontFamily: "'Flavors', cursive",
+  fontSize: "16px",
+}
 
 const uploadButtonStyle = (enabled) => ({
   marginTop: "10px",
   padding: "10px",
   cursor: enabled ? "pointer" : "not-allowed",
   opacity: enabled ? "1" : "0.5",
-  backgroundColor: enabled ? "#4CAF50" : "#cccccc",
+  backgroundColor: enabled ? "#7f5112" : "#cccccc",
   color: "white",
   border: "none",
   borderRadius: "25px",
+  fontFamily: "'Flavors', cursive",
+  fontSize: "16px",
 });
 
 const webcamStyle = {
@@ -374,28 +405,37 @@ const imagePreviewStyle = {
 
 // Location and Weather Styling
 const cityStyle = {
-  marginTop: "1px", 
-  padding: "10px",
+  position: "absolute", 
+  right: "15px", 
+  textAlign: "center", 
+  marginTop: "35px", 
+  padding: "20px",
   background: "#e3f2fd",
   borderRadius: "5px",
-  textAlign: "center",
   fontFamily: "'Coming Soon', cursive", 
   background: "#fff",
   fontWeight: "bold",
+  color: "#4b3621",
   boxShadow: "1px 1px 5px rgba(0, 0, 0, 0.1)",
+  backgroundImage: "url('./white-board.png')", 
+  backgroundRepeat: "no-repeat",
+  backgroundSize: "350px 225px",
+  width: "300px",
 };
 
 // "What You're Wearing" Styling
 const clothingListContainerStyle = {
-  flex: 1,
   display: "flex",
   flexDirection: "column",
   padding: "20px",
   borderLeft: "2px solid #ccc",
   overflowY: "auto",
+  borderRadius: "5px",
   background: "#f9f9f9",
   position: "relative",
-  fontFamily: "Poppins, sans-serif",  // Poppins font for "What You're Wearing"
+  fontFamily: "Poppins, sans-serif",  // Poppins font for "What You're Wearing",
+  color: "#4b3621",
+  width: "300px",
 };
 
 
@@ -427,6 +467,8 @@ const lastItemContainerStyle = {
   borderRadius: "5px",
   textAlign: "center",
   background: "#fff",
+  fontFamily: "Coming Soon, cursive",
+  fontWeight: "bold",
   boxShadow: "1px 1px 5px rgba(0, 0, 0, 0.1)",
 };
 
