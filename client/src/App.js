@@ -6,6 +6,7 @@ function ImageUploader() {
   const [selectedImage, setSelectedImage] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
   const [clothingItems, setClothingItems] = useState([]); // Store parsed clothing list
+  const [lastClothingItem, setLastClothingItem] = useState(null); // Last extracted clothing item
   const [newImageSelected, setNewImageSelected] = useState(false);
   const [useWebcam, setUseWebcam] = useState(false);
   const [capturedImage, setCapturedImage] = useState(null);
@@ -83,8 +84,10 @@ function ImageUploader() {
 
       if (result.clothingItems) {
         setClothingItems(result.clothingItems);
+        setLastClothingItem(result.clothingItems[result.clothingItems.length - 1] || "No item detected.");
       } else {
         setClothingItems(["No clothing description available."]);
+        setLastClothingItem(null);
       }
 
       setNewImageSelected(false);
@@ -164,10 +167,18 @@ function ImageUploader() {
         <div style={clothingListContainerStyle}>
           <h3 style={{ marginBottom: "10px", textAlign: "center" }}>👕 What You're Wearing:</h3>
           <ul style={{ listStyleType: "none", padding: 0 }}>
-            {clothingItems.map((item, index) => (
-              <li key={index} style={clothingItemStyle}>{item}</li>
-            ))}
+          {clothingItems.slice(0, -1).map((item, index) => (
+            <li key={index} style={clothingItemStyle}>{item}</li>
+          ))}
           </ul>
+
+          {/* Last Extracted Clothing Item Section */}
+          {lastClothingItem && (
+            <div style={lastItemContainerStyle}>
+              <h4 style={{marginTop: "0.3em"}}>Suggestions:</h4>
+              <p style={lastItemStyle}>{lastClothingItem}</p>
+            </div>
+          )}
         </div>
       </div>
     </div>
@@ -230,11 +241,15 @@ const imagePreviewStyle = {
 
 const clothingListContainerStyle = {
   flex: 1,
+  display: "flex",
+  flexDirection: "column",
   padding: "20px",
   borderLeft: "2px solid #ccc",
   overflowY: "auto",
   background: "#f9f9f9",
+  position: "relative",
 };
+
 
 const clothingItemStyle = {
   background: "#fff",
@@ -256,5 +271,20 @@ const countdownStyle = {
   padding: "20px",
   borderRadius: "10px",
 };
+
+const lastItemContainerStyle = {
+  marginTop: "auto", // Pushes it to the bottom
+  padding: "10px",
+  background: "#e3f2fd",
+  borderRadius: "5px",
+  textAlign: "center",
+  background: "#fff",
+  boxShadow: "1px 1px 5px rgba(0, 0, 0, 0.1)",
+};
+
+const lastItemStyle = {
+  fontSize: "16px",
+};
+
 
 export default ImageUploader;
