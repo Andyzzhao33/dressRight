@@ -1,4 +1,5 @@
 import React, { useState, useRef } from "react";
+import { GetLocation } from "./location";
 
 function ImageUploader() {
   const [selectedImage, setSelectedImage] = useState(null);
@@ -60,6 +61,8 @@ function ImageUploader() {
 
   return (
     <div style={{ display: "flex", height: "100vh", padding: "20px" }}>
+      {/* Left Side - Location */}
+      <GetLocation />
       {/* Left Side - Image Upload */}
       <div style={{ flex: 3, textAlign: "center" }}>
         <h2>Upload an Image</h2>
