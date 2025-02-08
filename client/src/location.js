@@ -52,15 +52,15 @@ function GetLocation () {
     }
   }
   
-    return (
-      <div>
-          <h2>Your Current Location</h2>
-          {location && <p>Latitude: {location.latitude}, Longitude: {location.longitude}</p>}
-          {error && <p style={{ color: "red" }}>{error}</p>}
-        <h2>Weather Information</h2>
-        {weather && <p>{weather}</p>}
-      </div>
-    );
+    // return (
+    //   <div>
+    //       <h2>Your Current Location</h2>
+    //       {location && <p>Latitude: {location.latitude}, Longitude: {location.longitude}</p>}
+    //       {error && <p style={{ color: "red" }}>{error}</p>}
+    //     <h2>Weather Information</h2>
+    //     {weather && <p>{weather}</p>}
+    //   </div>
+    // );
   }
   
 export { GetLocation };

@@ -5,12 +5,14 @@ import { GetLocation } from "./location"; // Location component import
 function ImageUploader() {
   const [selectedImage, setSelectedImage] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
+  const [webcamUrl, setWebcamUrl] = useState(null);
   const [clothingItems, setClothingItems] = useState([]); // Store parsed clothing list
   const [lastClothingItem, setLastClothingItem] = useState(null); // Last extracted clothing item
   const [newImageSelected, setNewImageSelected] = useState(false);
   const [useWebcam, setUseWebcam] = useState(false);
   const [capturedImage, setCapturedImage] = useState(null);
   const [isCapturing, setIsCapturing] = useState(false);
+  // const [hasCaptured, setHasCaptured] = useState(false);
   const [countdown, setCountdown] = useState(0);
   const fileInputRef = useRef(null);
   const webcamRef = useRef(null);
@@ -41,6 +43,7 @@ function ImageUploader() {
   const handleCapture = () => {
     setCountdown(3); // Start countdown from 3
     setIsCapturing(true);
+    // setHasCaptured(false);
   };
 
   // Capture Image from Webcam when countdown reaches 0
@@ -48,9 +51,10 @@ function ImageUploader() {
     if (webcamRef.current) {
       const imageSrc = webcamRef.current.getScreenshot();
       setCapturedImage(imageSrc);
-      setPreviewUrl(imageSrc);
+      setWebcamUrl(imageSrc);
       setNewImageSelected(true);
       setIsCapturing(false);
+      // setHasCaptured(true);
     }
   };
 
@@ -70,6 +74,7 @@ function ImageUploader() {
       const byteArray = new Uint8Array(byteNumbers);
       const imageBlob = new Blob([byteArray], { type: "image/png" });
       formData.append("image", imageBlob, "webcam.png");
+      // formData.append("image", capturedImage);
     } else if (selectedImage) {
       formData.append("image", selectedImage);
     }
@@ -104,16 +109,16 @@ function ImageUploader() {
       <header style={headerStyle}>
         <h1>DressRight</h1>
       </header>
-
+  
       {/* Main Content */}
       <div style={{ display: "flex", height: "100vh", padding: "20px" }}>
         {/* Left Column - Location & Image Upload */}
         <div style={{ flex: 3, textAlign: "center", paddingRight: "20px" }}>
           {/* Display Location Component */}
           <GetLocation />
-
+  
           <h2>Choose an Option</h2>
-
+  
           <div style={{ marginBottom: "10px" }}>
             <button onClick={() => setUseWebcam(false)} style={buttonStyle(!useWebcam)}>
               Upload Image
@@ -122,18 +127,35 @@ function ImageUploader() {
               Use Webcam
             </button>
           </div>
-
+  
           {useWebcam ? (
             <>
-              <div style={{ position: "relative", display: "inline-block" }}>
-                <Webcam ref={webcamRef} screenshotFormat="image/png" style={webcamStyle} />
-                {countdown > 0 && <div style={countdownStyle}>{countdown}</div>}
+            <div style={{ display: "flex", justifyContent: "center", gap: "20px", alignItems: "center", marginTop: "20px" }}>
+              {/* Webcam Container */}
+              <div style={{ position: "relative", display: "flex", flexDirection: "column", alignItems: "center" }}>
+                <button onClick={handleCapture} disabled={isCapturing} style={captureButtonStyle(isCapturing)}>
+                  {isCapturing ? "Capturing..." : "Take Photo (3s Timer)"}
+                </button>
+                <div style={{ position: "relative", marginTop: "10px" }}>
+                  <Webcam ref={webcamRef} screenshotFormat="image/png" style={webcamStyle} />
+                  {countdown > 0 && <div style={countdownStyle}>{countdown}</div>}
+                </div>
               </div>
-              <br />
-              <button onClick={handleCapture} disabled={isCapturing} style={captureButtonStyle(isCapturing)}>
-                {isCapturing ? "Capturing..." : "Take Photo (3s Timer)"}
-              </button>
-            </>
+          
+              {/* Captured Image Container */}
+              {webcamUrl && (
+                <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+                  <button onClick={handleUpload} disabled={isCapturing} style={uploadButtonStyle(newImageSelected)}>
+                    Upload
+                  </button>
+                  <div style={{ marginTop: "10px" }}>
+                    <img src={webcamUrl} alt="Preview" style={imagePreviewStyle} />
+                  </div>
+                </div>
+              )}
+            </div>
+          </>
+          
           ) : (
             <>
               {/* Hidden file input */}
@@ -144,38 +166,39 @@ function ImageUploader() {
                 ref={fileInputRef}
                 style={{ display: "none" }}
               />
-
+  
               {/* Custom Select Image Button */}
               <button onClick={() => fileInputRef.current.click()} style={buttonStyle(true)}>
                 Select Image
               </button>
+  
+              <button onClick={handleUpload} disabled={!newImageSelected} style={uploadButtonStyle(newImageSelected)}>
+                Upload
+              </button>
+
+               {/* Show Preview Only if Webcam is NOT Enabled */}
+               {previewUrl && !useWebcam && (
+                <div style={{ marginTop: "20px" }}>
+                  <img src={previewUrl} alt="Preview" style={imagePreviewStyle} />
+                </div>
+              )}
             </>
           )}
-
-          {previewUrl && (
-            <div style={{ marginTop: "20px" }}>
-              <img src={previewUrl} alt="Preview" style={imagePreviewStyle} />
-            </div>
-          )}
-
-          <button onClick={handleUpload} disabled={!newImageSelected} style={uploadButtonStyle(newImageSelected)}>
-            Upload
-          </button>
         </div>
-
+  
         {/* Right Column - Clothing List */}
         <div style={clothingListContainerStyle}>
           <h3 style={{ marginBottom: "10px", textAlign: "center" }}>👕 What You're Wearing:</h3>
           <ul style={{ listStyleType: "none", padding: 0 }}>
-          {clothingItems.slice(0, -1).map((item, index) => (
-            <li key={index} style={clothingItemStyle}>{item}</li>
-          ))}
+            {clothingItems.slice(0, -1).map((item, index) => (
+              <li key={index} style={clothingItemStyle}>{item}</li>
+            ))}
           </ul>
-
+  
           {/* Last Extracted Clothing Item Section */}
           {lastClothingItem && (
             <div style={lastItemContainerStyle}>
-              <h4 style={{marginTop: "0.3em"}}>Suggestions:</h4>
+              <h4 style={{ marginTop: "0.3em" }}>🌴Suggestions🌴</h4>
               <p style={lastItemStyle}>{lastClothingItem}</p>
             </div>
           )}
@@ -183,6 +206,7 @@ function ImageUploader() {
       </div>
     </div>
   );
+  
 }
 
 /* Styled Components */
