@@ -225,6 +225,7 @@ const webcamStyle = {
 const imagePreviewStyle = {
   borderRadius: "10px",
   border: "2px solid #ccc",
+  width: "300px",
 };
 
 const clothingListContainerStyle = {
