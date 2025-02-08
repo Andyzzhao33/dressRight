@@ -30,6 +30,15 @@ function ImageUploader() {
     setDressInput(""); // Clear input field
   };
 
+  const handleResetItems = () => {
+    setClothingItems([]);
+    setSuggestActive(false);
+  };
+
+  const handleDeleteItem = (indexToRemove) => {
+    setClothingItems(prevItems => prevItems.filter((_, index) => index !== indexToRemove));
+  };
+
   // Handles file selection
   const handleImageChange = (event) => {
     const file = event.target.files[0];
@@ -249,17 +258,31 @@ function ImageUploader() {
           <h3 style={{ marginBottom: "10px", textAlign: "center" }}>👕 What You're Wearing:</h3>
           <ul style={{ listStyleType: "none", padding: 0 }}>
             {clothingItems.map((item, index) => (
-              <li key={index} style={clothingItemStyle}>{item}</li>
+              <li key={index} style={clothingItemStyle}>
+                {item}
+                  <button onClick={() => handleDeleteItem(index)} style={{ marginLeft: "10px" }}>
+                    ❌
+                  </button>
+              </li>
             ))}
           </ul>
           {/* Input box for manually entering clothing items */}
-          <input
-            type="text"
-            value={dressInput}
-            onChange={(e) => setDressInput(e.target.value)}
-            placeholder="Enter clothing item..."
-          />
-          <button onClick={handleAddItem}>Add Item</button>
+          <div style={{ display: "flex", alignItems: "center", gap: "10px", marginTop: "10px" }}>
+            <input
+              type="text"
+              value={dressInput}
+              onChange={(e) => setDressInput(e.target.value)}
+              placeholder="Enter clothing item..."
+              style={{ padding: "1em", width: "80%", borderRadius: "0.2em" }}
+            />
+            <button onClick={handleAddItem} style={{ padding: "0.7em", borderRadius: "0.2em"}}>
+              ➕
+            </button>
+          </div>
+
+          <button onClick={handleResetItems} style={{ padding: "1em", width: "100%", borderRadius: "0.2em", marginTop: "1em" }}>
+          Reset🔄
+          </button>
 
           {/* Suggestions Button */}
           <button onClick={handleSuggestions} style={buttonStyle(suggestActive)} disabled={!suggestActive}> 
