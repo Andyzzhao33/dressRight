@@ -260,7 +260,7 @@ function ImageUploader() {
             {clothingItems.map((item, index) => (
               <li key={index} style={clothingItemStyle}>
                 {item}
-                  <button onClick={() => handleDeleteItem(index)} style={{ marginLeft: "10px" }}>
+                  <button onClick={() => handleDeleteItem(index)} style={{ marginLeft: "10px", cursor:"pointer" }}>
                     ❌
                   </button>
               </li>
@@ -279,15 +279,17 @@ function ImageUploader() {
               ➕
             </button>
           </div>
+          
+          <div style={{ display: "flex", alignItems: "center", gap: "2%", marginTop: "3%" }}>
+            <button onClick={handleResetItems} style={{ padding: "3%", width: "40%", borderRadius: "0.2%", marginTop: "1.5%", cursor: (clothingItems && clothingItems.length !== 0)  ? "pointer" : "not-allowed", }} disabled = {!clothingItems || clothingItems.length === 0}>
+            Reset 🔄
+            </button>
 
-          <button onClick={handleResetItems} style={{ padding: "1em", width: "100%", borderRadius: "0.2em", marginTop: "1em" }}>
-          Reset🔄
-          </button>
-
-          {/* Suggestions Button */}
-          <button onClick={handleSuggestions} style={buttonStyle(suggestActive)} disabled={!suggestActive}> 
-            Get Suggestions
-          </button>
+            {/* Suggestions Button */}
+            <button onClick={handleSuggestions} style={{ padding: "3%", width: "40%", borderRadius: "0.2%", marginTop: "1.5%", marginLeft: "3%", cursor: suggestActive ? "pointer" : "not-allowed",}} disabled={!suggestActive}> 
+              Suggest
+            </button>
+          </div>
   
           {/* Last Extracted Clothing Item Section */}
           {suggestions && (
